@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserAccount, UserRole, UserProfile } from '../types';
-import { PRECONFIGURED_ADMINS, INITIAL_DEMO_USERS } from '../utils/storage';
+import { PRECONFIGURED_ADMINS, INITIAL_DEMO_USERS, deduplicateUsers } from '../utils/storage';
 import {
   HeartPulse,
   Mail,
@@ -133,12 +133,12 @@ export const LoginPageView: React.FC<LoginPageViewProps> = ({
       }
     }
 
-    // Search registered and initial demo users
-    const allKnownUsers = [
+    // Search registered and initial demo users (strictly deduplicated)
+    const allKnownUsers = deduplicateUsers([
       ...(registeredUsers || []),
       ...PRECONFIGURED_ADMINS,
       ...INITIAL_DEMO_USERS
-    ];
+    ]);
 
     const foundUser = allKnownUsers.find((u) => {
       const uId = (u.id || '').toLowerCase();
@@ -203,6 +203,26 @@ export const LoginPageView: React.FC<LoginPageViewProps> = ({
     const generatedId =
       regUserId.trim() ||
       `${regRole === 'admin' ? 'admin' : 'user'}-${regName.trim().toLowerCase().replace(/\s+/g, '')}`;
+
+    const targetEmail = regEmail.trim().toLowerCase();
+    const targetId = generatedId.toLowerCase();
+
+    // Prevent duplicate accounts: check if email or User ID already exists
+    const existingUser = (registeredUsers || []).find((u) => {
+      const uEmail = (u.email || '').trim().toLowerCase();
+      const uId = (u.id || '').trim().toLowerCase();
+      return (
+        (targetEmail && uEmail === targetEmail) ||
+        (targetId && uId === targetId)
+      );
+    });
+
+    if (existingUser) {
+      setErrorMsg(
+        `An account with this email (${regEmail.trim()}) or User ID is already registered. Please sign in via the "Member Sign In" tab rather than creating a duplicate account.`
+      );
+      return;
+    }
 
     const numHeight = Number(regHeight) || 170;
     const numWeight = Number(regWeight) || 65;

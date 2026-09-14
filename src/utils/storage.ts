@@ -7,6 +7,7 @@ import {
   FeedbackSubmission,
   HabitChecklistItem,
   UserAccount,
+  UserRole,
   BmiCalculationRecord,
   HealthSlot,
   SlotBooking
@@ -117,6 +118,149 @@ export const INITIAL_DEMO_USERS: UserAccount[] = [
 
 export const DEFAULT_PROFILE: UserProfile = PRECONFIGURED_ADMINS[0].profile;
 
+/**
+ * Deduplicates user accounts by canonical email and/or user ID.
+ * - Guarantees each distinct person appears exactly ONCE.
+ * - Merges duplicate records while preserving the user's richest profile,
+ *   biometrics, role (admin takes precedence), credentials, and metadata.
+ * - Guarantees preconfigured admins retain their canonical IDs and names.
+ */
+export function deduplicateUsers(users: UserAccount[]): UserAccount[] {
+  if (!Array.isArray(users)) return [];
+
+  const deduplicated: UserAccount[] = [];
+  const seenEmails = new Map<string, number>(); // normalized email -> index in deduplicated
+  const seenIds = new Map<string, number>();    // normalized id -> index in deduplicated
+
+  for (const rawUser of users) {
+    if (!rawUser) continue;
+
+    const user = { ...rawUser };
+    const normEmail = (user.email || '').trim().toLowerCase();
+    const normId = (user.id || '').trim().toLowerCase();
+
+    // Check if this matches Rahul
+    const isRahul =
+      normId === 'admin-rahul' ||
+      normEmail === 'gaikwadrahul0506@gmail.com' ||
+      (user.name?.toLowerCase().includes('rahul') && user.role === 'admin');
+
+    // Check if this matches Rohini
+    const isRohini =
+      normId === 'admin-rohini' ||
+      normEmail === 'rohin9324@gmail.com' ||
+      (user.name?.toLowerCase().includes('rohini') && !isRahul);
+
+    let matchIndex = -1;
+
+    if (isRahul) {
+      matchIndex = deduplicated.findIndex(
+        (u) => u.id === 'admin-rahul' || u.email?.toLowerCase() === 'gaikwadrahul0506@gmail.com'
+      );
+    } else if (isRohini) {
+      matchIndex = deduplicated.findIndex(
+        (u) => u.id === 'admin-rohini' || u.email?.toLowerCase() === 'rohin9324@gmail.com'
+      );
+    } else {
+      if (normEmail && seenEmails.has(normEmail)) {
+        matchIndex = seenEmails.get(normEmail)!;
+      } else if (normId && seenIds.has(normId)) {
+        matchIndex = seenIds.get(normId)!;
+      }
+    }
+
+    if (matchIndex === -1) {
+      // First time seeing this user
+      let canonicalUser = { ...user };
+      if (isRahul) {
+        canonicalUser = {
+          ...PRECONFIGURED_ADMINS[0],
+          ...user,
+          id: 'admin-rahul',
+          name: 'Rahul Gaikwad',
+          email: 'gaikwadrahul0506@gmail.com',
+          role: 'admin',
+          password: 'Rahul123456',
+          profile: {
+            ...PRECONFIGURED_ADMINS[0].profile,
+            ...(user.profile || {})
+          }
+        };
+      } else if (isRohini) {
+        canonicalUser = {
+          ...PRECONFIGURED_ADMINS[1],
+          ...user,
+          id: 'admin-rohini',
+          name: 'Rohini Sharma',
+          email: 'rohin9324@gmail.com',
+          role: 'admin',
+          password: 'Rahul123456',
+          profile: {
+            ...PRECONFIGURED_ADMINS[1].profile,
+            ...(user.profile || {})
+          }
+        };
+      }
+
+      const newIdx = deduplicated.length;
+      deduplicated.push(canonicalUser);
+      if (canonicalUser.email) seenEmails.set(canonicalUser.email.trim().toLowerCase(), newIdx);
+      if (canonicalUser.id) seenIds.set(canonicalUser.id.trim().toLowerCase(), newIdx);
+    } else {
+      // Existing user found - merge non-destructively
+      const existing = deduplicated[matchIndex];
+      const mergedRole: UserRole =
+        existing.role === 'admin' || user.role === 'admin' || isRahul || isRohini
+          ? 'admin'
+          : existing.role || user.role || 'user';
+
+      const mergedProfile: UserProfile = {
+        ...(existing.profile || {}),
+        ...(user.profile || {}),
+        name: user.profile?.name || existing.profile?.name || user.name || existing.name || 'Community Member',
+        gender: user.profile?.gender || existing.profile?.gender || 'male',
+        activityLevel: user.profile?.activityLevel || existing.profile?.activityLevel || 'moderate',
+        customCalorieGoal:
+          user.profile?.customCalorieGoal ||
+          existing.profile?.customCalorieGoal,
+        customWaterGoalGlasses:
+          user.profile?.customWaterGoalGlasses ||
+          existing.profile?.customWaterGoalGlasses,
+        height: user.profile?.height || existing.profile?.height || 170,
+        weight: user.profile?.weight || existing.profile?.weight || 65,
+        age: user.profile?.age || existing.profile?.age || 24,
+        goal: user.profile?.goal || existing.profile?.goal || 'healthy_lifestyle'
+      };
+
+      deduplicated[matchIndex] = {
+        ...existing,
+        ...user,
+        id: existing.id,
+        role: mergedRole,
+        profile: mergedProfile,
+        joinDate: existing.joinDate || user.joinDate,
+        password: isRahul || isRohini ? 'Rahul123456' : user.password || existing.password
+      };
+
+      if (isRahul) {
+        deduplicated[matchIndex].id = 'admin-rahul';
+        deduplicated[matchIndex].name = 'Rahul Gaikwad';
+        deduplicated[matchIndex].email = 'gaikwadrahul0506@gmail.com';
+        deduplicated[matchIndex].role = 'admin';
+        deduplicated[matchIndex].password = 'Rahul123456';
+      } else if (isRohini) {
+        deduplicated[matchIndex].id = 'admin-rohini';
+        deduplicated[matchIndex].name = 'Rohini Sharma';
+        deduplicated[matchIndex].email = 'rohin9324@gmail.com';
+        deduplicated[matchIndex].role = 'admin';
+        deduplicated[matchIndex].password = 'Rahul123456';
+      }
+    }
+  }
+
+  return deduplicated;
+}
+
 export function getTodayString(): string {
   const now = new Date();
   const year = now.getFullYear();
@@ -129,62 +273,32 @@ export function getTodayString(): string {
 export function loadUsers(): UserAccount[] {
   try {
     const raw = localStorage.getItem(KEYS.USERS);
-    let merged: UserAccount[] = raw ? JSON.parse(raw) : [...INITIAL_DEMO_USERS];
+    let list: UserAccount[] = raw ? JSON.parse(raw) : [...INITIAL_DEMO_USERS];
 
-    // Ensure all preconfigured admins have their latest credentials (e.g. Rahul123456)
-    merged = merged.map((u) => {
-      if (u.role === 'admin' || u.id === 'admin-rahul' || u.email?.toLowerCase() === 'gaikwadrahul0506@gmail.com') {
-        return {
-          ...u,
-          password: 'Rahul123456',
-          role: 'admin',
-          email: 'gaikwadrahul0506@gmail.com',
-          id: 'admin-rahul'
-        };
-      }
-      if (u.id === 'admin-rohini' || u.email?.toLowerCase() === 'rohin9324@gmail.com') {
-        return {
-          ...u,
-          password: 'Rahul123456',
-          role: 'admin',
-          email: 'rohin9324@gmail.com',
-          id: 'admin-rohini'
-        };
-      }
-      return u;
-    });
+    if (!Array.isArray(list) || list.length === 0) {
+      list = [...INITIAL_DEMO_USERS];
+    }
 
-    PRECONFIGURED_ADMINS.forEach((admin) => {
-      const existingIdx = merged.findIndex(
-        (u) => u.email.toLowerCase() === admin.email.toLowerCase() || u.id === admin.id
-      );
-      if (existingIdx === -1) {
-        merged.unshift(admin);
-      } else {
-        merged[existingIdx] = {
-          ...merged[existingIdx],
-          ...admin,
-          password: admin.password,
-          role: 'admin'
-        };
-      }
-    });
+    // Always combine with preconfigured admins and strictly deduplicate
+    const combined = [...list, ...PRECONFIGURED_ADMINS];
+    const deduplicated = deduplicateUsers(combined);
 
-    // Save back to ensure localStorage is always updated with latest admin credentials
+    // Save cleaned deduplicated list back to localStorage to eliminate stale duplicates
     try {
-      localStorage.setItem(KEYS.USERS, JSON.stringify(merged));
+      localStorage.setItem(KEYS.USERS, JSON.stringify(deduplicated));
     } catch {}
 
-    return merged;
+    return deduplicated;
   } catch (e) {
     console.error('Error loading users', e);
   }
-  return INITIAL_DEMO_USERS;
+  return deduplicateUsers([...INITIAL_DEMO_USERS]);
 }
 
 export function saveUsers(users: UserAccount[]): void {
   try {
-    localStorage.setItem(KEYS.USERS, JSON.stringify(users));
+    const deduplicated = deduplicateUsers(users);
+    localStorage.setItem(KEYS.USERS, JSON.stringify(deduplicated));
   } catch (e) {
     console.error('Error saving users', e);
   }
@@ -196,13 +310,28 @@ export function loadCurrentUser(): UserAccount | null {
     const raw = localStorage.getItem(KEYS.CURRENT_USER);
     if (raw) {
       const user: UserAccount = JSON.parse(raw);
-      if (user.role === 'admin' || user.id === 'admin-rahul' || user.email?.toLowerCase() === 'gaikwadrahul0506@gmail.com') {
-        const updated = {
+      if (user.id === 'admin-rahul' || user.email?.toLowerCase() === 'gaikwadrahul0506@gmail.com') {
+        const updated: UserAccount = {
           ...user,
-          password: 'Rahul123456',
-          role: 'admin' as const,
+          id: 'admin-rahul',
+          name: 'Rahul Gaikwad',
           email: 'gaikwadrahul0506@gmail.com',
-          id: 'admin-rahul'
+          role: 'admin',
+          password: 'Rahul123456'
+        };
+        try {
+          localStorage.setItem(KEYS.CURRENT_USER, JSON.stringify(updated));
+        } catch {}
+        return updated;
+      }
+      if (user.id === 'admin-rohini' || user.email?.toLowerCase() === 'rohin9324@gmail.com') {
+        const updated: UserAccount = {
+          ...user,
+          id: 'admin-rohini',
+          name: 'Rohini Sharma',
+          email: 'rohin9324@gmail.com',
+          role: 'admin',
+          password: 'Rahul123456'
         };
         try {
           localStorage.setItem(KEYS.CURRENT_USER, JSON.stringify(updated));

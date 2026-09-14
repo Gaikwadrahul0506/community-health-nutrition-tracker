@@ -30,7 +30,8 @@ import {
   getInitialBmiHistory,
   getInitialHealthSlots,
   loadHabits,
-  loadDayRecords
+  loadDayRecords,
+  deduplicateUsers
 } from '../utils/storage';
 
 export interface DatabaseSyncState {
@@ -61,7 +62,8 @@ export async function fetchUsersFromFirestore(): Promise<UserAccount[]> {
     const colRef = collection(db, USERS_COLLECTION);
     const snap = await getDocs(colRef);
     if (snap.empty) return [];
-    return snap.docs.map((d) => d.data() as UserAccount);
+    const raw = snap.docs.map((d) => d.data() as UserAccount);
+    return deduplicateUsers(raw);
   } catch (err) {
     console.warn('Firestore fetchUsers error:', err);
     return [];
@@ -90,12 +92,56 @@ export function subscribeToUsers(onUpdate: (users: UserAccount[]) => void) {
   const colRef = collection(db, USERS_COLLECTION);
   return onSnapshot(colRef, (snap) => {
     if (!snap.empty) {
-      const list = snap.docs.map((d) => d.data() as UserAccount);
-      onUpdate(list);
+      const raw = snap.docs.map((d) => d.data() as UserAccount);
+      onUpdate(deduplicateUsers(raw));
     }
   }, (err) => {
     console.warn('subscribeToUsers error:', err);
   });
+}
+
+/**
+ * Scans Firestore for duplicate user records, deletes duplicate or misnamed documents,
+ * and ensures canonical deduplicated user documents exist with full profile data preserved.
+ */
+export async function cleanDuplicateUsersInFirestore(): Promise<number> {
+  try {
+    const colRef = collection(db, USERS_COLLECTION);
+    const snap = await getDocs(colRef);
+    if (snap.empty) return 0;
+
+    const allDocs = snap.docs.map((d) => ({ docId: d.id, data: d.data() as UserAccount }));
+    const rawUsers = allDocs.map((d) => d.data);
+    const deduplicated = deduplicateUsers(rawUsers);
+
+    let removedCount = 0;
+    // Remove documents whose docId is not in canonical users or duplicate documents
+    for (const item of allDocs) {
+      const matchingCanonical = deduplicated.find(
+        (u) =>
+          u.id === item.docId &&
+          (u.email?.trim().toLowerCase() === item.data.email?.trim().toLowerCase())
+      );
+      if (!matchingCanonical) {
+        try {
+          await deleteDoc(doc(db, USERS_COLLECTION, item.docId));
+          removedCount++;
+        } catch (e) {
+          console.warn(`Could not delete duplicate Firestore user doc ${item.docId}:`, e);
+        }
+      }
+    }
+
+    // Save/update the deduplicated canonical documents
+    for (const user of deduplicated) {
+      await saveUserToFirestore(user);
+    }
+
+    return removedCount;
+  } catch (err) {
+    console.warn('cleanDuplicateUsersInFirestore error:', err);
+    return 0;
+  }
 }
 
 // ----------------------------------------------------
@@ -452,10 +498,13 @@ export async function seedAllDataToFirestore(forceOverwrite = false): Promise<{
   };
 
   try {
-    // 1. Users
+    // 1. Users - Deduplicate before saving to Firestore
+    await cleanDuplicateUsersInFirestore();
     const existingUsers = await fetchUsersFromFirestore();
     const localUsers = loadUsers();
-    const usersToUpload = forceOverwrite ? localUsers : (existingUsers.length > 0 ? existingUsers : localUsers);
+    const usersToUpload = forceOverwrite
+      ? deduplicateUsers(localUsers)
+      : (existingUsers.length > 0 ? deduplicateUsers(existingUsers) : deduplicateUsers(localUsers));
     for (const u of usersToUpload) {
       await saveUserToFirestore(u);
       counts.users++;

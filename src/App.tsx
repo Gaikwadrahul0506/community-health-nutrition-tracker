@@ -41,7 +41,8 @@ import {
   getTodayString,
   getOrCreateDay,
   populateSampleDemoData,
-  DEFAULT_PROFILE
+  DEFAULT_PROFILE,
+  deduplicateUsers
 } from './utils/storage';
 import {
   calculateCalorieNeeds,
@@ -102,6 +103,7 @@ import {
   fetchHabitsFromFirestore,
   saveHabitToFirestore,
   seedAllDataToFirestore,
+  cleanDuplicateUsersInFirestore,
   DatabaseSyncState
 } from './services/firestoreService';
 
@@ -192,6 +194,9 @@ export default function App() {
 
     const initializeFirestoreData = async () => {
       try {
+        // First cleanup any existing duplicate user records in Firestore
+        await cleanDuplicateUsersInFirestore();
+
         // Upload initial data to Firestore if not already seeded
         const seedResult = await seedAllDataToFirestore(false);
         if (seedResult.success) {
@@ -216,8 +221,9 @@ export default function App() {
           ]);
 
         if (cloudUsers.length > 0) {
-          setUsers(cloudUsers);
-          saveUsers(cloudUsers);
+          const deduplicated = deduplicateUsers(cloudUsers);
+          setUsers(deduplicated);
+          saveUsers(deduplicated);
         }
         if (cloudFoods.length > 0) {
           setFoodsDatabase(cloudFoods);
@@ -405,11 +411,46 @@ export default function App() {
   };
 
   const handleRegisterUser = (newUser: UserAccount) => {
-    const updatedUsers = [...users, newUser];
-    setUsers(updatedUsers);
-    saveUsers(updatedUsers);
-    saveUserToFirestore(newUser).catch((e) => console.warn('Cloud user save:', e));
-    handleUserChange(newUser);
+    const normEmail = newUser.email.trim().toLowerCase();
+    const normId = newUser.id.trim().toLowerCase();
+
+    // Check if user already exists by ID or email
+    const existingIndex = users.findIndex(
+      (u) =>
+        (normEmail && u.email?.trim().toLowerCase() === normEmail) ||
+        (normId && u.id?.trim().toLowerCase() === normId)
+    );
+
+    let updatedUsers: UserAccount[];
+    let targetUser: UserAccount;
+
+    if (existingIndex !== -1) {
+      // User already exists: update existing record non-destructively without creating duplicate
+      const existing = users[existingIndex];
+      targetUser = {
+        ...existing,
+        ...newUser,
+        id: existing.id, // Preserve existing canonical ID
+        role: existing.role === 'admin' ? 'admin' : newUser.role, // Preserve admin role
+        profile: {
+          ...existing.profile,
+          ...newUser.profile
+        }
+      };
+      updatedUsers = users.map((u, idx) => (idx === existingIndex ? targetUser : u));
+      showToast(`Account updated for ${targetUser.name}`);
+    } else {
+      // New member registration
+      targetUser = newUser;
+      updatedUsers = [...users, newUser];
+      showToast(`Welcome ${newUser.name}! Account registered successfully.`);
+    }
+
+    const cleanList = deduplicateUsers(updatedUsers);
+    setUsers(cleanList);
+    saveUsers(cleanList);
+    saveUserToFirestore(targetUser).catch((e) => console.warn('Cloud user save:', e));
+    handleUserChange(targetUser);
   };
 
   const handleUpdateUserPassword = (userId: string, newPass: string) => {
@@ -863,8 +904,9 @@ export default function App() {
       saveCurrentUser(updatedUser);
 
       const updatedUsers = users.map((u) => (u.id === currentUser.id ? updatedUser : u));
-      setUsers(updatedUsers);
-      saveUsers(updatedUsers);
+      const cleanList = deduplicateUsers(updatedUsers);
+      setUsers(cleanList);
+      saveUsers(cleanList);
       saveUserToFirestore(updatedUser).catch((e) => console.warn('Cloud profile update:', e));
     }
 

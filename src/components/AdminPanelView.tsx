@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   UserAccount,
   SurveyQuestion,
@@ -9,7 +9,7 @@ import {
   SlotStatus,
   ActiveTab
 } from '../types';
-import { PRECONFIGURED_ADMINS } from '../utils/storage';
+import { PRECONFIGURED_ADMINS, deduplicateUsers } from '../utils/storage';
 import {
   ShieldCheck,
   Users,
@@ -118,8 +118,10 @@ export const AdminPanelView: React.FC<AdminPanelViewProps> = ({
   const [unlockPassword, setUnlockPassword] = useState('');
   const [unlockError, setUnlockError] = useState<string | null>(null);
 
-  // Unified safe arrays
-  const allUsers = registeredUsers || users || [];
+  // Unified safe, strictly deduplicated arrays
+  const allUsers = useMemo(() => {
+    return deduplicateUsers(registeredUsers || users || []);
+  }, [registeredUsers, users]);
   const allFeedback = feedbackList || feedbacks || [];
   const allCommunityQuestions = communitySurveys || communityQuestions || [];
   const handleCreateSurveyAction = onCreateSurveyQuestion || onCreateSurvey || (() => {});

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { UserAccount, UserRole, UserProfile } from '../types';
-import { PRECONFIGURED_ADMINS, INITIAL_DEMO_USERS } from '../utils/storage';
+import { PRECONFIGURED_ADMINS, INITIAL_DEMO_USERS, deduplicateUsers } from '../utils/storage';
 import {
   HeartPulse,
   Mail,
@@ -106,8 +106,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       }
     }
 
-    // Check registered and demo users
-    const allUsers = [...registeredUsers, ...PRECONFIGURED_ADMINS, ...INITIAL_DEMO_USERS];
+    // Check registered and demo users (strictly deduplicated)
+    const allUsers = deduplicateUsers([...registeredUsers, ...PRECONFIGURED_ADMINS, ...INITIAL_DEMO_USERS]);
     const found = allUsers.find((u) => {
       const uId = u.id.toLowerCase();
       const uEmail = u.email.toLowerCase();
@@ -142,6 +142,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     const assignedId =
       signupUserId.trim() ||
       `${signupRole === 'admin' ? 'admin' : 'user'}-${name.trim().toLowerCase().replace(/\s+/g, '')}`;
+
+    const targetEmail = email.trim().toLowerCase();
+    const targetId = assignedId.toLowerCase();
+
+    // Check if user already exists
+    const existingUser = (registeredUsers || []).find((u) => {
+      const uEmail = (u.email || '').trim().toLowerCase();
+      const uId = (u.id || '').trim().toLowerCase();
+      return (
+        (targetEmail && uEmail === targetEmail) ||
+        (targetId && uId === targetId)
+      );
+    });
+
+    if (existingUser) {
+      setErrorMsg('An account with this email or User ID already exists. Please sign in instead.');
+      return;
+    }
 
     const numHeight = Number(height) || 170;
     const numWeight = Number(weight) || 65;
