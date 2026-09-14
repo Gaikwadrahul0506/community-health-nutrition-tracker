@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account credentials, role and profile information",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "password": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "joinDate": { "type": "string" },
+        "profile": { "type": "object" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Food": {
+      "title": "FoodItem",
+      "description": "Nutritional food item with macros and calories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "servingSize": { "type": "string" },
+        "calories": { "type": "number" },
+        "protein": { "type": "number" },
+        "carbs": { "type": "number" },
+        "fats": { "type": "number" },
+        "fiber": { "type": "number" },
+        "category": { "type": "string" },
+        "isCustom": { "type": "boolean" }
+      },
+      "required": ["id", "name", "calories", "protein", "carbs", "fats"]
+    },
+    "HealthSlot": {
+      "title": "HealthSlot",
+      "description": "Consultation camp or appointment slot for community wellness",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "doctorOrCoordinator": { "type": "string" },
+        "date": { "type": "string" },
+        "timeRange": { "type": "string" },
+        "location": { "type": "string" },
+        "venueType": { "type": "string" },
+        "capacity": { "type": "number" },
+        "bookedCount": { "type": "number" },
+        "status": { "type": "string" },
+        "description": { "type": "string" },
+        "bookings": { "type": "array" }
+      },
+      "required": ["id", "title", "date", "timeRange", "capacity", "status"]
+    },
+    "CommunityQuestion": {
+      "title": "CommunityQuestion",
+      "description": "Community nutrition and wellness survey poll question",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "options": { "type": "array" },
+        "totalVotes": { "type": "number" },
+        "createdBy": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "options", "totalVotes"]
+    },
+    "FeedbackSubmission": {
+      "title": "FeedbackSubmission",
+      "description": "Community member feedback, suggestion or CEP inquiry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "subject": { "type": "string" },
+        "rating": { "type": "number" },
+        "category": { "type": "string" },
+        "comments": { "type": "string" },
+        "status": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "subject", "comments"]
+    },
+    "SurveyResponse": {
+      "title": "SurveyResponse",
+      "description": "Nutritional intake and health habit survey response",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "ageGroup": { "type": "string" },
+        "dietPreference": { "type": "string" },
+        "waterIntakeGlasses": { "type": "string" },
+        "primaryHealthGoal": { "type": "string" }
+      },
+      "required": ["id", "timestamp"]
+    },
+    "DayRecord": {
+      "title": "DayRecord",
+      "description": "Daily nutrition, water, and exercise logs for a user",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "meals": { "type": "array" },
+        "waterLogs": { "type": "array" },
+        "waterTotalMl": { "type": "number" },
+        "exercises": { "type": "array" }
+      },
+      "required": ["userId", "date"]
+    },
+    "BmiRecord": {
+      "title": "BmiCalculationRecord",
+      "description": "Calculated BMI and historical metric log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "height": { "type": "number" },
+        "weight": { "type": "number" },
+        "bmi": { "type": "number" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "userId", "bmi", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "entity": "User",
+      "description": "User account documents"
+    },
+    "/foods/{foodId}": {
+      "entity": "Food",
+      "description": "Indian and global nutritional foods database"
+    },
+    "/slots/{slotId}": {
+      "entity": "HealthSlot",
+      "description": "Health consultation camp slots and bookings"
+    },
+    "/communityQuestions/{questionId}": {
+      "entity": "CommunityQuestion",
+      "description": "Community nutrition survey questions and votes"
+    },
+    "/feedback/{feedbackId}": {
+      "entity": "FeedbackSubmission",
+      "description": "Community member feedback and reviews"
+    },
+    "/surveys/{surveyId}": {
+      "entity": "SurveyResponse",
+      "description": "Community nutrition survey audit responses"
+    },
+    "/dayRecords/{recordId}": {
+      "entity": "DayRecord",
+      "description": "User daily nutrition, hydration and activity records"
+    },
+    "/bmiHistory/{historyId}": {
+      "entity": "BmiRecord",
+      "description": "BMI calculation historical logs"
+    },
+    "/habits/{habitId}": {
+      "entity": "object",
+      "description": "Daily healthy habit checklist items"
+    }
+  }
+}

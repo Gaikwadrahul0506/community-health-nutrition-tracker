@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection: user credentials and profiles
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Foods database: nutritional library
+    match /foods/{foodId} {
+      allow read, write: if true;
+    }
+
+    // Health Consultation & Camp Slots
+    match /slots/{slotId} {
+      allow read, write: if true;
+    }
+
+    // Community Questions & Survey Polls
+    match /communityQuestions/{questionId} {
+      allow read, write: if true;
+    }
+
+    // Community Feedback Submissions
+    match /feedback/{feedbackId} {
+      allow read, write: if true;
+    }
+
+    // Nutritional Survey Responses
+    match /surveys/{surveyId} {
+      allow read, write: if true;
+    }
+
+    // Daily meal, water, and exercise records
+    match /dayRecords/{recordId} {
+      allow read, write: if true;
+    }
+
+    // BMI history calculation records
+    match /bmiHistory/{historyId} {
+      allow read, write: if true;
+    }
+
+    // Healthy habit checklist items
+    match /habits/{habitId} {
+      allow read, write: if true;
+    }
+
+    // Default match
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}

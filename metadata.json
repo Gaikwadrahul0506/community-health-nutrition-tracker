@@ -1,0 +1,6 @@
+{
+  "name": "Community Health & Nutrition Tracker (CEP)",
+  "description": "An interactive Nutrition and Health Tracking platform for Community Engagement Projects (CEP), featuring meal tracking, water intake, BMI calculator, exercise logs, community survey, analytics, and health guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
