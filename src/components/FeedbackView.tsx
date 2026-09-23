@@ -48,8 +48,8 @@ export const FeedbackView: React.FC<FeedbackViewProps> = ({
 
   const faqs = [
     {
-      q: 'What is the goal of this Community Engagement Project (CEP)?',
-      a: 'The objective of this CEP initiative is to democratize preventive health literacy. We provide urban and campus communities with easy-to-use digital tools for monitoring calorie intake, 8-glass hydration adherence, BMI classification, and physical movement.'
+      q: 'What is the goal of this Community Health & Nutrition Project?',
+      a: 'The objective of this health initiative is to democratize preventive health literacy. We provide urban and campus communities with easy-to-use digital tools for monitoring calorie intake, 8-glass hydration adherence, BMI classification, and physical movement.'
     },
     {
       q: 'How does the BMI Calculator evaluate health status?',
@@ -120,7 +120,7 @@ export const FeedbackView: React.FC<FeedbackViewProps> = ({
               Community Feedback & Inquiries
             </h1>
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mt-1">
-              Help us enhance NutriTrack. Submit ratings, share meal suggestions, report issues, or generate your CEP health report.
+              Help us enhance NutriTrack. Submit ratings, share meal suggestions, report issues, or generate your comprehensive health report.
             </p>
           </div>
 
@@ -129,7 +129,7 @@ export const FeedbackView: React.FC<FeedbackViewProps> = ({
             className="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-lg shadow-emerald-700/20 transition-all flex items-center gap-2 self-start sm:self-auto cursor-pointer"
           >
             <FileText className="w-4 h-4" />
-            <span>Generate CEP Report</span>
+            <span>Generate Health Report</span>
           </button>
         </div>
       </div>
@@ -215,7 +215,7 @@ export const FeedbackView: React.FC<FeedbackViewProps> = ({
                     <option value="nutrition">Nutrition Tracker & Indian Foods</option>
                     <option value="community">Health Camps & Consultation Slots</option>
                     <option value="suggestion">Feature Request / Suggestion</option>
-                    <option value="cep_inquiry">CEP Academic Inquiry / Research</option>
+                    <option value="cep_inquiry">Academic / Community Health Inquiry</option>
                   </select>
                 </div>
 
@@ -294,7 +294,7 @@ export const FeedbackView: React.FC<FeedbackViewProps> = ({
           <div className="bg-white/40 dark:bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 border border-white/60 dark:border-white/10 shadow-xl space-y-4">
             <h3 className="text-base font-black text-slate-950 dark:text-white flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-emerald-600" />
-              <span>CEP Project Coordinators</span>
+              <span>Health Project Coordinators</span>
             </h3>
 
             <div className="space-y-3 text-xs text-slate-700 dark:text-slate-300">

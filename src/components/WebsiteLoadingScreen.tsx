@@ -262,7 +262,7 @@ export const WebsiteLoadingScreen: React.FC<WebsiteLoadingScreenProps> = ({
         transition={{ delay: 0.4 }}
         className="relative z-10 mt-8 text-[11px] font-medium text-emerald-300/80 text-center"
       >
-        <span>CEP Health & Community Wellness Initiative • Rahul Gaikwad & Rohini Sharma</span>
+        <span>Community Health & Wellness Initiative • Rahul Gaikwad & Rohini Sharma</span>
       </motion.div>
     </motion.div>
   );

@@ -111,10 +111,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
     {
       id: 'survey' as ActiveTab,
       title: 'Community Lifestyle Survey',
-      desc: 'Participate in the CEP community research survey & explore collective community data.',
+      desc: 'Participate in the community health survey & explore collective community data.',
       icon: ClipboardList,
       color: 'from-teal-500 to-emerald-600',
-      badge: 'CEP Research',
+      badge: 'Community Research',
       bgLight: 'bg-white/40 dark:bg-white/5',
       borderLight: 'border-white/50 dark:border-white/10',
       textAccent: 'text-teal-700 dark:text-teal-300'
@@ -146,7 +146,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         <div className="relative z-10 max-w-4xl space-y-6">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/60 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 text-xs font-bold border border-white/60 dark:border-emerald-700/50 shadow-xs backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>Community Engagement Project (CEP) Initiative</span>
+            <span>Community Health & Wellness Initiative</span>
           </div>
 
           <div className="space-y-2">
@@ -279,7 +279,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
         </div>
       </section>
 
-      {/* About the CEP Project Section with Frosted Glass */}
+      {/* About the Community Project Section with Frosted Glass */}
       <section className="bg-white/40 dark:bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-xl space-y-6">
         <div className="flex items-center gap-3">
           <div className="p-3 rounded-2xl bg-emerald-600 text-white shadow-md">
@@ -287,7 +287,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
           <div>
             <span className="text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
-              Community Engagement Project (CEP)
+              Community Health Initiative
             </span>
             <h2 className="text-2xl font-black text-slate-900 dark:text-white">
               About This Project & Community Mission
@@ -302,7 +302,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
               1. Community Health Need
             </div>
             <p>
-              Urban and student communities frequently face rising rates of sedentary habits, inadequate water intake, and nutrient-poor ultra-processed foods. This CEP initiative addresses health literacy gaps at a grassroots level.
+              Urban and student communities frequently face rising rates of sedentary habits, inadequate water intake, and nutrient-poor ultra-processed foods. This initiative addresses health literacy gaps at a grassroots level.
             </p>
           </div>
 
@@ -413,10 +413,10 @@ export const HomeView: React.FC<HomeViewProps> = ({
             <span>Community Health Survey</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-            Have 2 minutes? Take the CEP Community Survey
+            Have 2 minutes? Take the Community Health Survey
           </h3>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            Help our CEP research team analyze local nutrition patterns, average water intake, and weekly physical activity across participants.
+            Help our research team analyze local nutrition patterns, average water intake, and weekly physical activity across participants.
           </p>
         </div>
         <button

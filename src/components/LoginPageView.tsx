@@ -411,7 +411,7 @@ export const LoginPageView: React.FC<LoginPageViewProps> = ({
                   )}
                   <span>
                     {authMode === 'admin_login'
-                      ? 'Restricted to registered CEP Coordinators & Administrators.'
+                      ? 'Restricted to registered Coordinators & Administrators.'
                       : 'Sign in to access your personal dietary log & wellness stats.'}
                   </span>
                 </div>

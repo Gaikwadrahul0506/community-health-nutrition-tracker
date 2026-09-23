@@ -832,7 +832,7 @@ export default function App() {
       ...q,
       id: `cq-${Date.now()}`,
       options: safeOptions,
-      createdBy: q.createdBy || currentUser?.name || 'CEP Admin',
+      createdBy: q.createdBy || currentUser?.name || 'Health Admin',
       createdAt: new Date().toISOString().split('T')[0],
       totalVotes: 0
     };
@@ -1006,9 +1006,9 @@ export default function App() {
               <div className="space-y-2 max-w-2xl">
                 <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-400 text-xs font-black uppercase tracking-wider">
                   <CalendarCheck2 className="w-4 h-4" />
-                  <span>Free CEP Health Consultation & Camp Slots</span>
+                  <span>Free Community Health Consultation & Camp Slots</span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
+                <h3 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white">
                   Reserve a 1-on-1 Nutrition or BMI Health Slot
                 </h3>
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -1045,11 +1045,11 @@ export default function App() {
                   <CalendarCheck2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                  <h4 className="text-sm font-black text-slate-950 dark:text-white">
                     Need Personalized Nutrition Advice?
                   </h4>
                   <p className="text-xs text-slate-600 dark:text-slate-400">
-                    Book a free health camp or online consultation slot with CEP coordinators.
+                    Book a free health camp or online consultation slot with our health coordinators.
                   </p>
                 </div>
               </div>

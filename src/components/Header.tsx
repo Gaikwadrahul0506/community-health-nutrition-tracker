@@ -90,13 +90,13 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-2 z-40 w-full transition-all duration-200">
-      {/* Top Banner / CEP Initiative Strip */}
+      {/* Top Banner / Community Health Initiative Strip */}
       <div className="max-w-7xl mx-auto mb-2 px-2 sm:px-4">
         <div className="bg-emerald-950/90 dark:bg-emerald-950/95 backdrop-blur-md text-white px-3.5 sm:px-4 py-1.5 rounded-xl text-xs font-medium flex items-center justify-between border border-white/20 shadow-md">
           <div className="flex items-center gap-2 truncate">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
             <span className="truncate text-[11px] sm:text-xs">
-              <strong className="font-semibold text-emerald-200">CEP Initiative:</strong> Community Health & Nutrition Tracker
+              <strong className="font-semibold text-emerald-200">Health Initiative:</strong> Community Health & Nutrition Tracker
             </span>
           </div>
 
@@ -154,9 +154,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center gap-1.5">
                   <span className="font-black text-base sm:text-lg tracking-tight text-slate-950 dark:text-white">
                     Nutri<span className="text-emerald-700 dark:text-emerald-400">Track</span>
-                  </span>
-                  <span className="hidden md:inline-block px-1.5 py-0.5 text-[9px] font-black rounded-md bg-emerald-500/15 text-emerald-900 dark:text-emerald-300 border border-emerald-500/30">
-                    CEP 2026
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold tracking-tight hidden sm:block">

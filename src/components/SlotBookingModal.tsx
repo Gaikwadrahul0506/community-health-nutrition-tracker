@@ -75,7 +75,7 @@ export const SlotBookingModal: React.FC<SlotBookingModalProps> = ({
                 Book Consultation & Health Camp Slots
               </h2>
               <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                Reserve 1-on-1 time with CEP Health Coordinators (Rahul Gaikwad & Rohini Sharma).
+                Reserve 1-on-1 time with Health Coordinators (Rahul Gaikwad & Rohini Sharma).
               </p>
             </div>
           </div>

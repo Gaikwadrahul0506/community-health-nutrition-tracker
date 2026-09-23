@@ -86,7 +86,7 @@ export const DatabaseModal: React.FC<DatabaseModalProps> = ({
       collection: 'feedback',
       count: syncState.counts.feedback,
       icon: MessageSquare,
-      desc: 'Reviews, suggestions, and CEP project inquiries'
+      desc: 'Reviews, suggestions, and community inquiries'
     },
     {
       name: 'Survey Audit Responses',
@@ -131,7 +131,7 @@ export const DatabaseModal: React.FC<DatabaseModalProps> = ({
                 </span>
               </h2>
               <p className="text-xs text-emerald-100 font-medium">
-                Real-time persistence for all NutriTrack CEP website data
+                Real-time persistence for all NutriTrack website data
               </p>
             </div>
           </div>

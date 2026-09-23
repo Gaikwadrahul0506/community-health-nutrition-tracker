@@ -35,7 +35,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
   const handleExportJSON = () => {
     const dataStr = JSON.stringify(
       {
-        project: 'Community Engagement Project (CEP) - Nutrition & Health Tracker',
+        project: 'Community Nutrition & Health Tracker',
         generatedAt: new Date().toISOString(),
         profile,
         todayRecord,
@@ -48,7 +48,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `CEP-Health-Report-${profile.name.replace(/\s+/g, '_')}.json`;
+    a.download = `Health-Report-${profile.name.replace(/\s+/g, '_')}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -64,7 +64,7 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-                CEP Project Health Dossier
+                Community Health Dossier
               </span>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                 Nutritional & Lifestyle Evaluation
@@ -149,9 +149,9 @@ export const ReportModal: React.FC<ReportModalProps> = ({
             </div>
           </div>
 
-          {/* CEP Project Accreditation */}
+          {/* Project Accreditation */}
           <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-[11px] text-emerald-800 dark:text-emerald-300">
-            <strong>Community Engagement Project Accreditation:</strong> Verified community digital tracking report. Designed for public health awareness and lifestyle improvement.
+            <strong>Community Health Project Verification:</strong> Verified community digital tracking report. Designed for public health awareness and lifestyle improvement.
           </div>
         </div>
 

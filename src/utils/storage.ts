@@ -554,7 +554,7 @@ export function getInitialFeedbackList(): FeedbackSubmission[] {
       id: 'fb-3',
       name: 'Sneha Deshmukh',
       email: 'sneha.deshmukh@community.org',
-      subject: 'CEP Health Drive Workshop Inquiry',
+      subject: 'Community Health Drive Workshop Inquiry',
       category: 'cep_inquiry',
       rating: 5,
       comments: 'Our neighborhood center wants to use NutriTrack for our upcoming 50-person community health audit this weekend. Can we export consolidated summaries?',
@@ -692,7 +692,7 @@ export function getInitialHealthSlots(): HealthSlot[] {
     },
     {
       id: 'slot-2',
-      title: 'CEP Comprehensive BMI, BP & Body Composition Drive',
+      title: 'Comprehensive BMI, BP & Body Composition Drive',
       type: 'bmi_wellness_check',
       doctorOrCoordinator: 'Rahul Gaikwad (Admin Lead)',
       coordinatorEmail: 'gaikwadrahul0506@gmail.com',

@@ -135,13 +135,13 @@ export const CommunitySurveyView: React.FC<CommunitySurveyViewProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-950 dark:text-emerald-300 text-xs font-black border border-emerald-500/30 mb-2 shadow-xs">
               <ClipboardList className="w-3.5 h-3.5 text-emerald-600" />
-              <span>CEP Community Health & Nutrition Research</span>
+              <span>Community Health & Nutrition Research</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-950 dark:text-white tracking-tight">
               Community Health Surveys & Polls
             </h1>
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mt-1">
-              Cast your vote on active community questions, take the CEP lifestyle audit, and inspect collective health trends.
+              Cast your vote on active community questions, take the lifestyle audit, and inspect collective health trends.
             </p>
           </div>
 
@@ -194,7 +194,7 @@ export const CommunitySurveyView: React.FC<CommunitySurveyViewProps> = ({
                 No active community polls yet
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 max-w-sm mx-auto">
-                Our CEP nutrition coordinators publish weekly questions on hydration, local nutrition habits, and fitness.
+                Our nutrition coordinators publish weekly questions on hydration, local nutrition habits, and fitness.
               </p>
             </div>
           ) : (
@@ -274,7 +274,7 @@ export const CommunitySurveyView: React.FC<CommunitySurveyViewProps> = ({
                     </div>
 
                     <div className="pt-2 border-t border-white/40 dark:border-white/10 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
-                      <span>Surveyed by {q.createdBy || 'CEP Health Team'}</span>
+                      <span>Surveyed by {q.createdBy || 'Community Health Team'}</span>
                       <span className={hasVoted ? 'text-emerald-700 dark:text-emerald-300 font-bold' : ''}>
                         {hasVoted ? '✓ Vote Recorded' : 'Tap option to vote'}
                       </span>
@@ -287,7 +287,7 @@ export const CommunitySurveyView: React.FC<CommunitySurveyViewProps> = ({
         </div>
       )}
 
-      {/* SUB-TAB 2: COMPREHENSIVE CEP SURVEY FORM */}
+      {/* SUB-TAB 2: COMPREHENSIVE SURVEY FORM */}
       {activeSubTab === 'form' && (
         <div className="bg-white/40 dark:bg-slate-900/50 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/60 dark:border-white/10 shadow-xl space-y-6 max-w-4xl mx-auto">
           {submittedSuccess ? (
@@ -299,7 +299,7 @@ export const CommunitySurveyView: React.FC<CommunitySurveyViewProps> = ({
                 Thank You for Contributing to Community Health!
               </h3>
               <p className="text-xs font-semibold text-slate-700 dark:text-slate-300 max-w-md mx-auto">
-                Your response has been safely recorded into the CEP Community database and mirrored to cloud storage.
+                Your response has been safely recorded into the Community database and mirrored to cloud storage.
               </p>
               <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
                 <button
@@ -505,7 +505,7 @@ export const CommunitySurveyView: React.FC<CommunitySurveyViewProps> = ({
                 {Object.entries(dietCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Vegetarian'}
               </div>
               <p className="text-[11px] font-semibold text-teal-800 dark:text-teal-400">
-                Majority choice in CEP zone
+                Majority choice in community
               </p>
             </div>
 
